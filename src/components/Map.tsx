@@ -1,10 +1,26 @@
 import { useMemo } from 'react'
 import { Map as MapLibre } from 'react-map-gl/maplibre'
 import DeckGL from '@deck.gl/react'
+import { ScatterplotLayer } from '@deck.gl/layers'
 import type { PickingInfo } from '@deck.gl/core'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { SquareLayer } from './DiamondLayer'
+
+// Detect actual mobile devices (not just emulation)
+// Mobile shader compilers are stricter, so we fall back to circles
+const isMobileDevice = (): boolean => {
+  if (typeof window === 'undefined') return false
+  const ua = navigator.userAgent.toLowerCase()
+  const isMobileUA = /iphone|ipad|ipod|android|webos|blackberry|windows phone/i.test(ua)
+  const isSmallScreen = window.innerWidth <= 768
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  // Only consider it mobile if it has a mobile user agent AND small screen
+  // This helps distinguish actual mobile from desktop emulation
+  return isMobileUA && isSmallScreen && hasTouch
+}
+
+const IS_MOBILE = isMobileDevice()
 import type { TreeData, PhenologyData } from '../data/types'
 import { getTreeColor } from '../utils/colors'
 import { getSpeciesPeakColor } from '../data/speciesColors'
@@ -123,10 +139,12 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
     return BASE_RADIUS + (normalized / maxNormalized) * (BASE_RADIUS * (MAX_RADIUS_MULTIPLIER - 1))
   }
 
-  // Create the tree layer - diamond shapes, no glow
+  // Create the tree layer
+  // Use squares on desktop, circles on mobile (mobile shader compilers don't support our custom shader)
   const layers = useMemo(() => {
+    const LayerClass = IS_MOBILE ? ScatterplotLayer : SquareLayer
     return [
-      new SquareLayer({
+      new LayerClass({
         id: 'trees',
         data,
         getPosition: (d) => d.position,
