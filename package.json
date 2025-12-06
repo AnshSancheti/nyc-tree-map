@@ -3,15 +3,25 @@
   "version": "1.0.0",
   "description": "NYC Autumn Foliage Visualization - 680k trees changing color through fall",
   "type": "module",
+  "homepage": "https://anshsancheti.github.io/nyc-tree-map",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "fetch-trees": "tsx scripts/fetch-tree-data.ts",
     "fetch-phenology": "tsx scripts/fetch-phenology.ts",
     "fetch-data": "npm run fetch-trees && npm run fetch-phenology"
   },
-  "keywords": ["nyc", "trees", "visualization", "autumn", "foliage", "deck.gl"],
+  "keywords": [
+    "nyc",
+    "trees",
+    "visualization",
+    "autumn",
+    "foliage",
+    "deck.gl"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -32,6 +42,7 @@
     "@types/d3-interpolate": "^3.0.4",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "gh-pages": "^6.3.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
