@@ -9,10 +9,9 @@ export class SquareLayer<DataT = unknown> extends ScatterplotLayer<DataT> {
     return {
       ...shaders,
       inject: {
-        // Redefine smoothedge to always return 1.0 = no circle clipping = square
-        'fs:#decl': `
-          #define smoothedge(x, y) 1.0
-        `
+        // Override smoothedge to always return 1.0 = no circle clipping = square
+        // Use minimal syntax for mobile shader compiler compatibility
+        'fs:#decl': '#define smoothedge(edge, aa) 1.0\n'
       }
     }
   }
