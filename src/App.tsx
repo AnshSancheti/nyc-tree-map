@@ -27,13 +27,14 @@ function App() {
       try {
         setLoading(true)
 
-        // Load tree data
-        const treesResponse = await fetch('/data/trees.json')
+        // Load tree data (use BASE_URL for GitHub Pages compatibility)
+        const baseUrl = import.meta.env.BASE_URL
+        const treesResponse = await fetch(`${baseUrl}data/trees.json`)
         if (!treesResponse.ok) throw new Error('Failed to load tree data')
         const trees = await treesResponse.json()
 
         // Load phenology data
-        const phenologyResponse = await fetch('/data/phenology.json')
+        const phenologyResponse = await fetch(`${baseUrl}data/phenology.json`)
         if (!phenologyResponse.ok) throw new Error('Failed to load phenology data')
         const phenology = await phenologyResponse.json()
 
