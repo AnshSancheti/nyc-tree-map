@@ -20,7 +20,7 @@ interface MapProps {
 const NYC_BOUNDS = {
   longitude: -73.98,
   latitude: 40.70,
-  zoom: 9.8,
+  zoom: 9.9,
   pitch: 0,
   bearing: 0,
 }
