@@ -2,24 +2,25 @@ import { ScatterplotLayer } from '@deck.gl/layers'
 import type { ScatterplotLayerProps } from '@deck.gl/layers'
 
 // Custom fragment shader that renders diamonds instead of circles
-const fs = `#version 300 es
+// Uses GLSL ES 1.0 for WebGL 1 compatibility (mobile devices)
+const fs = `\
 precision highp float;
 
-in vec4 vFillColor;
-
-out vec4 fragColor;
+varying vec4 vFillColor;
 
 void main(void) {
-  // Get distance from center in diamond coordinates (rotated 45 degrees)
   // Diamond shape: |x| + |y| <= 1
   vec2 uv = gl_PointCoord * 2.0 - 1.0;
   float dist = abs(uv.x) + abs(uv.y);
 
-  if (dist > 1.0) {
+  // Use alpha blending instead of discard for better mobile GPU compatibility
+  float alpha = 1.0 - step(1.0, dist);
+
+  if (alpha < 0.01) {
     discard;
   }
 
-  fragColor = vFillColor;
+  gl_FragColor = vec4(vFillColor.rgb, vFillColor.a * alpha);
 }
 `
 
