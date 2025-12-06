@@ -4,7 +4,7 @@ import DeckGL from '@deck.gl/react'
 import type { PickingInfo } from '@deck.gl/core'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-import { DiamondLayer } from './DiamondLayer'
+import { SquareLayer } from './DiamondLayer'
 import type { TreeData, PhenologyData } from '../data/types'
 import { getTreeColor } from '../utils/colors'
 import { getSpeciesPeakColor } from '../data/speciesColors'
@@ -126,7 +126,7 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
   // Create the tree layer - diamond shapes, no glow
   const layers = useMemo(() => {
     return [
-      new DiamondLayer({
+      new SquareLayer({
         id: 'trees',
         data,
         getPosition: (d) => d.position,
