@@ -5,3 +5,6 @@ dist/
 tmp/
 .env
 .env.local
+
+# Large raw data files
+public/data/*.csv
