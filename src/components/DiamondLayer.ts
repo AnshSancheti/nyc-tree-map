@@ -1,31 +1,26 @@
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { ScatterplotLayerProps } from '@deck.gl/layers'
 
-// Custom fragment shader that renders diamonds instead of circles
-// Uses GLSL ES 1.0 for WebGL 1 compatibility (mobile devices)
-const fs = `\
+// Custom fragment shader that renders squares instead of circles
+// Point sprites are already square - we just output the color without clipping
+// deck.gl 9.x uses WebGL 2, so we use GLSL 300 es
+const fs = `#version 300 es
 precision highp float;
 
-varying vec4 vFillColor;
+uniform float opacity;
+
+in vec4 vFillColor;
+
+out vec4 fragColor;
 
 void main(void) {
-  // Diamond shape: |x| + |y| <= 1
-  vec2 uv = gl_PointCoord * 2.0 - 1.0;
-  float dist = abs(uv.x) + abs(uv.y);
-
-  // Use alpha blending instead of discard for better mobile GPU compatibility
-  float alpha = 1.0 - step(1.0, dist);
-
-  if (alpha < 0.01) {
-    discard;
-  }
-
-  gl_FragColor = vec4(vFillColor.rgb, vFillColor.a * alpha);
+  // Output fill color directly - no circle clipping = square shape
+  fragColor = vec4(vFillColor.rgb, vFillColor.a * opacity);
 }
 `
 
-export class DiamondLayer<DataT = unknown> extends ScatterplotLayer<DataT> {
-  static layerName = 'DiamondLayer'
+export class SquareLayer<DataT = unknown> extends ScatterplotLayer<DataT> {
+  static layerName = 'SquareLayer'
 
   getShaders() {
     const shaders = super.getShaders()
@@ -36,4 +31,6 @@ export class DiamondLayer<DataT = unknown> extends ScatterplotLayer<DataT> {
   }
 }
 
+// Keep DiamondLayer as alias for backwards compatibility
+export const DiamondLayer = SquareLayer
 export type DiamondLayerProps<DataT = unknown> = ScatterplotLayerProps<DataT>
