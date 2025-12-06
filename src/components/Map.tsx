@@ -164,6 +164,7 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
   return (
     <DeckGL
       initialViewState={NYC_BOUNDS}
+      // @ts-expect-error minZoom works at runtime but isn't in types
       controller={{ minZoom: 9.8 }}
       layers={layers}
       getTooltip={getTooltip}
