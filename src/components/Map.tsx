@@ -16,17 +16,17 @@ interface MapProps {
   currentDOY: number
 }
 
-// NYC bounding box
+// NYC initial view - zoomed out to see all boroughs
 const NYC_BOUNDS = {
   longitude: -73.98,
-  latitude: 40.75,
-  zoom: 10.5,
+  latitude: 40.70,
+  zoom: 9.8,
   pitch: 0,
   bearing: 0,
 }
 
-// Dark basemap style - using Carto Dark Matter
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+// Dark basemap style - using Carto Dark Matter (no labels)
+const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json'
 
 export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
   // Build phenology lookup with peak colors
@@ -109,7 +109,7 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
         },
         getRadius: 5,
         radiusMinPixels: 1,
-        radiusMaxPixels: 20,
+        radiusMaxPixels: 12,
         updateTriggers: {
           getFillColor: [currentDOY],
         },
@@ -137,7 +137,7 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
   return (
     <DeckGL
       initialViewState={NYC_BOUNDS}
-      controller={true}
+      controller={{ minZoom: 9.8 }}
       layers={layers}
       getTooltip={getTooltip}
     >

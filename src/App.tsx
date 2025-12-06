@@ -40,6 +40,9 @@ function App() {
         setTreeData(trees)
         setPhenologyData(phenology)
         setError(null)
+
+        // Autoplay animation after data loads
+        setTimeout(() => play(), 100)
       } catch (err) {
         console.error('Error loading data:', err)
         setError(err instanceof Error ? err.message : 'Failed to load data')

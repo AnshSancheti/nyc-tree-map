@@ -20,7 +20,7 @@ export function useAnimation(): UseAnimationReturn {
 
   const [currentDOY, setCurrentDOY] = useState(START_DOY)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [speed, setSpeedState] = useState(1)
+  const [speed, setSpeedState] = useState(4)
 
   const animationRef = useRef<number | null>(null)
   const lastTimeRef = useRef<number>(0)
