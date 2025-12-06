@@ -1,0 +1,38 @@
+{
+  "name": "nyc-tree-map",
+  "version": "1.0.0",
+  "description": "NYC Autumn Foliage Visualization - 680k trees changing color through fall",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "fetch-trees": "tsx scripts/fetch-tree-data.ts",
+    "fetch-phenology": "tsx scripts/fetch-phenology.ts",
+    "fetch-data": "npm run fetch-trees && npm run fetch-phenology"
+  },
+  "keywords": ["nyc", "trees", "visualization", "autumn", "foliage", "deck.gl"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@deck.gl/core": "^9.2.3",
+    "@deck.gl/layers": "^9.2.3",
+    "@deck.gl/react": "^9.2.3",
+    "@luma.gl/constants": "^9.2.4",
+    "@vitejs/plugin-react": "^5.1.1",
+    "d3-interpolate": "^3.0.1",
+    "deck.gl": "^9.2.3",
+    "maplibre-gl": "^5.14.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-map-gl": "^8.1.0",
+    "vite": "^7.2.6"
+  },
+  "devDependencies": {
+    "@types/d3-interpolate": "^3.0.4",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

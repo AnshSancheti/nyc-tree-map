@@ -1,0 +1,1322 @@
+{
+  "'Schubert' chokecherry": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 315,
+    "peakColor": [
+      235,
+      95,
+      75
+    ]
+  },
+  "American beech": {
+    "onset": 295,
+    "peak": 320,
+    "drop": 355,
+    "peakColor": [
+      210,
+      170,
+      80
+    ]
+  },
+  "American elm": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      218,
+      180,
+      50
+    ]
+  },
+  "American hophornbeam": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "American hornbeam": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "American larch": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "American linden": {
+    "onset": 278,
+    "peak": 296,
+    "drop": 316,
+    "peakColor": [
+      195,
+      175,
+      55
+    ]
+  },
+  "Amur cork tree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Amur maackia": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Amur maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "Atlantic white cedar": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "Atlas cedar": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "Callery pear": {
+    "onset": 285,
+    "peak": 308,
+    "drop": 328,
+    "peakColor": [
+      180,
+      50,
+      80
+    ]
+  },
+  "Chinese chestnut": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Chinese elm": {
+    "onset": 285,
+    "peak": 305,
+    "drop": 325,
+    "peakColor": [
+      210,
+      175,
+      55
+    ]
+  },
+  "Chinese fringetree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Chinese tree lilac": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Cornelian cherry": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 315,
+    "peakColor": [
+      235,
+      95,
+      75
+    ]
+  },
+  "Douglas-fir": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "English oak": {
+    "onset": 295,
+    "peak": 318,
+    "drop": 345,
+    "peakColor": [
+      175,
+      115,
+      65
+    ]
+  },
+  "European alder": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "European beech": {
+    "onset": 298,
+    "peak": 322,
+    "drop": 358,
+    "peakColor": [
+      205,
+      165,
+      75
+    ]
+  },
+  "European hornbeam": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Himalayan cedar": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "Japanese hornbeam": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Japanese maple": {
+    "onset": 275,
+    "peak": 298,
+    "drop": 320,
+    "peakColor": [
+      220,
+      20,
+      60
+    ]
+  },
+  "Japanese snowbell": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Japanese tree lilac": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Japanese zelkova": {
+    "onset": 282,
+    "peak": 302,
+    "drop": 322,
+    "peakColor": [
+      230,
+      110,
+      50
+    ]
+  },
+  "Kentucky coffeetree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      200,
+      175,
+      65
+    ]
+  },
+  "Kentucky yellowwood": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      240,
+      210,
+      60
+    ]
+  },
+  "London planetree": {
+    "onset": 295,
+    "peak": 315,
+    "drop": 340,
+    "peakColor": [
+      205,
+      133,
+      63
+    ]
+  },
+  "Norway maple": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 322,
+    "peakColor": [
+      240,
+      200,
+      40
+    ]
+  },
+  "Norway spruce": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "Ohio buckeye": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      210,
+      140,
+      45
+    ]
+  },
+  "Oklahoma redbud": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Osage-orange": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Persian ironwood": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      220,
+      80,
+      50
+    ]
+  },
+  "Schumard's oak": {
+    "onset": 290,
+    "peak": 312,
+    "drop": 340,
+    "peakColor": [
+      200,
+      120,
+      50
+    ]
+  },
+  "Scots pine": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "Shantung maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "Siberian elm": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Sophora": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Turkish hazelnut": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "Virginia pine": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "arborvitae": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "ash": {
+    "onset": 270,
+    "peak": 288,
+    "drop": 308,
+    "peakColor": [
+      160,
+      80,
+      100
+    ]
+  },
+  "bald cypress": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "bigtooth aspen": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "black cherry": {
+    "onset": 272,
+    "peak": 292,
+    "drop": 312,
+    "peakColor": [
+      235,
+      95,
+      75
+    ]
+  },
+  "black locust": {
+    "onset": 275,
+    "peak": 290,
+    "drop": 305,
+    "peakColor": [
+      210,
+      195,
+      70
+    ]
+  },
+  "black maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "black oak": {
+    "onset": 290,
+    "peak": 312,
+    "drop": 340,
+    "peakColor": [
+      200,
+      120,
+      50
+    ]
+  },
+  "black pine": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "black walnut": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "blackgum": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "blue spruce": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "boxelder": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "bur oak": {
+    "onset": 290,
+    "peak": 312,
+    "drop": 340,
+    "peakColor": [
+      200,
+      120,
+      50
+    ]
+  },
+  "catalpa": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      190,
+      170,
+      70
+    ]
+  },
+  "cherry": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 315,
+    "peakColor": [
+      240,
+      100,
+      70
+    ]
+  },
+  "cockspur hawthorn": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      200,
+      90,
+      60
+    ]
+  },
+  "common hackberry": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      195,
+      165,
+      60
+    ]
+  },
+  "crab apple": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      200,
+      150,
+      50
+    ]
+  },
+  "crepe myrtle": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "crimson king maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "cucumber magnolia": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      180,
+      140,
+      60
+    ]
+  },
+  "dawn redwood": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "eastern cottonwood": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "eastern hemlock": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "eastern redbud": {
+    "onset": 278,
+    "peak": 296,
+    "drop": 316,
+    "peakColor": [
+      220,
+      190,
+      60
+    ]
+  },
+  "eastern redcedar": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "empress tree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "false cypress": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "flowering dogwood": {
+    "onset": 260,
+    "peak": 280,
+    "drop": 300,
+    "peakColor": [
+      200,
+      60,
+      90
+    ]
+  },
+  "ginkgo": {
+    "onset": 290,
+    "peak": 308,
+    "drop": 315,
+    "peakColor": [
+      255,
+      225,
+      53
+    ]
+  },
+  "golden raintree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "green ash": {
+    "onset": 270,
+    "peak": 288,
+    "drop": 308,
+    "peakColor": [
+      160,
+      80,
+      100
+    ]
+  },
+  "hardy rubber tree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "hawthorn": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      200,
+      90,
+      60
+    ]
+  },
+  "hedge maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "holly": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "honeylocust": {
+    "onset": 275,
+    "peak": 292,
+    "drop": 308,
+    "peakColor": [
+      218,
+      165,
+      32
+    ]
+  },
+  "horse chestnut": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "katsura tree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      245,
+      180,
+      70
+    ]
+  },
+  "kousa dogwood": {
+    "onset": 265,
+    "peak": 285,
+    "drop": 305,
+    "peakColor": [
+      190,
+      70,
+      85
+    ]
+  },
+  "littleleaf linden": {
+    "onset": 280,
+    "peak": 298,
+    "drop": 318,
+    "peakColor": [
+      200,
+      170,
+      50
+    ]
+  },
+  "magnolia": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      180,
+      140,
+      60
+    ]
+  },
+  "maple": {
+    "onset": 265,
+    "peak": 285,
+    "drop": 308,
+    "peakColor": [
+      220,
+      20,
+      60
+    ]
+  },
+  "mimosa": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "mulberry": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      200,
+      170,
+      55
+    ]
+  },
+  "northern red oak": {
+    "onset": 288,
+    "peak": 310,
+    "drop": 338,
+    "peakColor": [
+      205,
+      92,
+      0
+    ]
+  },
+  "pagoda dogwood": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "paper birch": {
+    "onset": 255,
+    "peak": 275,
+    "drop": 295,
+    "peakColor": [
+      250,
+      230,
+      70
+    ]
+  },
+  "paperbark maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "pignut hickory": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "pin oak": {
+    "onset": 290,
+    "peak": 312,
+    "drop": 340,
+    "peakColor": [
+      255,
+      140,
+      0
+    ]
+  },
+  "pine": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "pitch pine": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "pond cypress": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "purple-leaf plum": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "quaking aspen": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "red horse chestnut": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "red maple": {
+    "onset": 265,
+    "peak": 285,
+    "drop": 308,
+    "peakColor": [
+      220,
+      20,
+      60
+    ]
+  },
+  "red pine": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "river birch": {
+    "onset": 258,
+    "peak": 278,
+    "drop": 298,
+    "peakColor": [
+      240,
+      220,
+      60
+    ]
+  },
+  "sassafras": {
+    "onset": 260,
+    "peak": 280,
+    "drop": 300,
+    "peakColor": [
+      255,
+      100,
+      50
+    ]
+  },
+  "sawtooth oak": {
+    "onset": 290,
+    "peak": 312,
+    "drop": 338,
+    "peakColor": [
+      195,
+      120,
+      50
+    ]
+  },
+  "scarlet oak": {
+    "onset": 285,
+    "peak": 308,
+    "drop": 335,
+    "peakColor": [
+      255,
+      100,
+      0
+    ]
+  },
+  "serviceberry": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      230,
+      100,
+      50
+    ]
+  },
+  "shingle oak": {
+    "onset": 290,
+    "peak": 312,
+    "drop": 340,
+    "peakColor": [
+      200,
+      120,
+      50
+    ]
+  },
+  "silver birch": {
+    "onset": 255,
+    "peak": 275,
+    "drop": 295,
+    "peakColor": [
+      245,
+      225,
+      65
+    ]
+  },
+  "silver linden": {
+    "onset": 282,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      200,
+      170,
+      50
+    ]
+  },
+  "silver maple": {
+    "onset": 278,
+    "peak": 298,
+    "drop": 318,
+    "peakColor": [
+      230,
+      210,
+      80
+    ]
+  },
+  "smoketree": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "southern magnolia": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      180,
+      140,
+      60
+    ]
+  },
+  "southern red oak": {
+    "onset": 288,
+    "peak": 310,
+    "drop": 338,
+    "peakColor": [
+      205,
+      92,
+      0
+    ]
+  },
+  "spruce": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "sugar maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      255,
+      120,
+      50
+    ]
+  },
+  "swamp white oak": {
+    "onset": 292,
+    "peak": 315,
+    "drop": 342,
+    "peakColor": [
+      185,
+      125,
+      58
+    ]
+  },
+  "sweetgum": {
+    "onset": 268,
+    "peak": 290,
+    "drop": 315,
+    "peakColor": [
+      200,
+      30,
+      70
+    ]
+  },
+  "sycamore maple": {
+    "onset": 290,
+    "peak": 310,
+    "drop": 330,
+    "peakColor": [
+      200,
+      140,
+      70
+    ]
+  },
+  "tartar maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "tree of heaven": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      180,
+      160,
+      60
+    ]
+  },
+  "trident maple": {
+    "onset": 275,
+    "peak": 295,
+    "drop": 318,
+    "peakColor": [
+      230,
+      100,
+      60
+    ]
+  },
+  "tulip-poplar": {
+    "onset": 270,
+    "peak": 290,
+    "drop": 312,
+    "peakColor": [
+      250,
+      220,
+      50
+    ]
+  },
+  "two-winged silverbell": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "weeping willow": {
+    "onset": 280,
+    "peak": 300,
+    "drop": 320,
+    "peakColor": [
+      204,
+      85,
+      0
+    ]
+  },
+  "white ash": {
+    "onset": 268,
+    "peak": 286,
+    "drop": 306,
+    "peakColor": [
+      170,
+      70,
+      110
+    ]
+  },
+  "white oak": {
+    "onset": 295,
+    "peak": 318,
+    "drop": 345,
+    "peakColor": [
+      180,
+      120,
+      60
+    ]
+  },
+  "white pine": {
+    "onset": 320,
+    "peak": 340,
+    "drop": 365,
+    "peakColor": [
+      74,
+      90,
+      74
+    ]
+  },
+  "willow oak": {
+    "onset": 298,
+    "peak": 320,
+    "drop": 345,
+    "peakColor": [
+      190,
+      130,
+      55
+    ]
+  }
+}
