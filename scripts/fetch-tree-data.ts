@@ -24,6 +24,7 @@ interface RawTreeRecord {
   latitude?: string
   longitude?: string
   status?: string
+  tree_dbh?: string  // Diameter at breast height in inches
 }
 
 interface ProcessedTree {
@@ -31,13 +32,14 @@ interface ProcessedTree {
   lat: number
   speciesIndex: number
   offset: number
+  diameter: number  // DBH in inches (0 if unknown)
 }
 
 async function fetchPage(offset: number): Promise<RawTreeRecord[]> {
   const params = new URLSearchParams({
     $limit: PAGE_SIZE.toString(),
     $offset: offset.toString(),
-    $select: 'spc_common,spc_latin,latitude,longitude,status',
+    $select: 'spc_common,spc_latin,latitude,longitude,status,tree_dbh',
     $where: "status = 'Alive'", // Only living trees
   })
 
@@ -100,11 +102,15 @@ function processTreeData(rawTrees: RawTreeRecord[]) {
 
     speciesSet.add(tree.spc_common)
 
+    // Parse diameter (DBH in inches), default to 0 if missing
+    const diameter = tree.tree_dbh ? parseInt(tree.tree_dbh, 10) : 0
+
     validTrees.push({
       lng,
       lat,
       speciesIndex: -1, // Will be set after we build the species array
       offset: Math.round((Math.random() * 10 - 5)), // Random offset -5 to +5 days
+      diameter: isNaN(diameter) ? 0 : diameter,
     })
   }
 
@@ -125,8 +131,8 @@ function processTreeData(rawTrees: RawTreeRecord[]) {
     i++
   }
 
-  // Convert to flat array format: [lng, lat, speciesIndex, offset, ...]
-  const positions: number[][] = validTrees.map(t => [t.lng, t.lat, t.speciesIndex, t.offset])
+  // Convert to flat array format: [lng, lat, speciesIndex, offset, diameter]
+  const positions: number[][] = validTrees.map(t => [t.lng, t.lat, t.speciesIndex, t.offset, t.diameter])
 
   return {
     positions,

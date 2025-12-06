@@ -1,6 +1,7 @@
 // Tree data structure (optimized for size)
 export interface TreeData {
-  // Array of [longitude, latitude, speciesIndex, randomOffset]
+  // Array of [longitude, latitude, speciesIndex, randomOffset, diameter]
+  // diameter is DBH (diameter at breast height) in inches, 0 if unknown
   positions: Float32Array | number[][]
   // Species index to name lookup
   species: string[]
@@ -26,6 +27,7 @@ export interface Tree {
   position: [number, number]
   speciesIndex: number
   randomOffset: number
+  diameter: number  // DBH in inches, 0 if unknown
 }
 
 // Animation state

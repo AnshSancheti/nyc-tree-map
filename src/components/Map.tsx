@@ -10,6 +10,16 @@ import { getTreeColor } from '../utils/colors'
 import { getSpeciesPeakColor } from '../data/speciesColors'
 import { getDefaultTimingForSpecies } from '../utils/phenology'
 
+// Feature flag for diameter-based sizing
+const DIAMETER_SIZING_ENABLED = import.meta.env.VITE_FEATURE_DIAMETER_SIZING === 'true'
+
+// Diameter scaling constants
+// NYC street trees typically range from 3" (young) to 40"+ (mature)
+const MIN_DIAMETER = 3    // inches
+const MAX_DIAMETER = 40   // inches
+const BASE_RADIUS = 3     // base pixel radius
+const MAX_RADIUS_MULTIPLIER = 4  // largest trees are 4x the base size
+
 interface MapProps {
   treeData: TreeData
   phenologyData: PhenologyData
@@ -70,31 +80,48 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
       position: [number, number]
       speciesIndex: number
       offset: number
+      diameter: number
     }> = []
 
     // Handle both typed array and regular array
     if (positions instanceof Float32Array) {
-      // Format: [lng, lat, speciesIndex, offset, lng, lat, ...]
-      for (let i = 0; i < positions.length; i += 4) {
+      // Format: [lng, lat, speciesIndex, offset, diameter, lng, lat, ...]
+      for (let i = 0; i < positions.length; i += 5) {
         result.push({
           position: [positions[i], positions[i + 1]],
           speciesIndex: positions[i + 2],
           offset: positions[i + 3],
+          diameter: positions[i + 4] || 0,
         })
       }
     } else {
-      // Format: [[lng, lat, speciesIndex, offset], ...]
+      // Format: [[lng, lat, speciesIndex, offset, diameter], ...]
       for (const item of positions) {
         result.push({
           position: [item[0], item[1]],
           speciesIndex: item[2],
           offset: item[3] || 0,
+          diameter: item[4] || 0,
         })
       }
     }
 
     return result
   }, [treeData.positions])
+
+  // Calculate radius from diameter using sqrt scaling (so area scales linearly)
+  const getRadiusFromDiameter = (diameter: number): number => {
+    if (!DIAMETER_SIZING_ENABLED || diameter <= 0) {
+      return 5 // default fixed radius
+    }
+    // Clamp diameter to reasonable range
+    const clampedDiameter = Math.max(MIN_DIAMETER, Math.min(MAX_DIAMETER, diameter))
+    // Use sqrt scaling so visual area is proportional to diameter
+    const normalized = Math.sqrt(clampedDiameter / MIN_DIAMETER)
+    const maxNormalized = Math.sqrt(MAX_DIAMETER / MIN_DIAMETER)
+    // Scale to radius range
+    return BASE_RADIUS + (normalized / maxNormalized) * (BASE_RADIUS * (MAX_RADIUS_MULTIPLIER - 1))
+  }
 
   // Create the tree layer - diamond shapes, no glow
   const layers = useMemo(() => {
@@ -107,7 +134,7 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
           const timing = phenologyLookup[d.speciesIndex]
           return getTreeColor(timing, currentDOY, d.offset)
         },
-        getRadius: 5,
+        getRadius: (d) => getRadiusFromDiameter(d.diameter),
         radiusMinPixels: 1,
         radiusMaxPixels: 12,
         updateTriggers: {
