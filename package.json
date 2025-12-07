@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -d docs",
     "fetch-trees": "tsx scripts/fetch-tree-data.ts",
     "fetch-phenology": "tsx scripts/fetch-phenology.ts",
     "fetch-data": "npm run fetch-trees && npm run fetch-phenology"

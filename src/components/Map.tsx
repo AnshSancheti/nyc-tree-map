@@ -26,15 +26,14 @@ import { getTreeColor } from '../utils/colors'
 import { getSpeciesPeakColor } from '../data/speciesColors'
 import { getDefaultTimingForSpecies } from '../utils/phenology'
 
-// Feature flag for diameter-based sizing
-const DIAMETER_SIZING_ENABLED = import.meta.env.VITE_FEATURE_DIAMETER_SIZING === 'true'
-
 // Diameter scaling constants
-// NYC street trees typically range from 3" (young) to 40"+ (mature)
-const MIN_DIAMETER = 3    // inches
-const MAX_DIAMETER = 40   // inches
-const BASE_RADIUS = 3     // base pixel radius
-const MAX_RADIUS_MULTIPLIER = 4  // largest trees are 4x the base size
+// NYC street trees range from 3" (serviceberry) to 40"+ (mature London planetree)
+// Using aggressive scaling so size differences are visible at city scale
+const MIN_DBH = 3       // smallest trees (serviceberry, young plantings)
+const MAX_DBH = 45      // largest trees (mature London planetrees, oaks)
+const DEFAULT_DBH = 10  // median diameter for trees with missing data
+const MIN_RADIUS = 1.5  // tiny ornamentals - barely visible specks
+const MAX_RADIUS = 22   // massive canopy trees - dominate the view
 
 interface MapProps {
   treeData: TreeData
@@ -125,18 +124,23 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
     return result
   }, [treeData.positions])
 
-  // Calculate radius from diameter using sqrt scaling (so area scales linearly)
-  const getRadiusFromDiameter = (diameter: number): number => {
-    if (!DIAMETER_SIZING_ENABLED || diameter <= 0) {
-      return 5 // default fixed radius
-    }
-    // Clamp diameter to reasonable range
-    const clampedDiameter = Math.max(MIN_DIAMETER, Math.min(MAX_DIAMETER, diameter))
-    // Use sqrt scaling so visual area is proportional to diameter
-    const normalized = Math.sqrt(clampedDiameter / MIN_DIAMETER)
-    const maxNormalized = Math.sqrt(MAX_DIAMETER / MIN_DIAMETER)
-    // Scale to radius range
-    return BASE_RADIUS + (normalized / maxNormalized) * (BASE_RADIUS * (MAX_RADIUS_MULTIPLIER - 1))
+  // Calculate radius from DBH (diameter at breast height)
+  // Uses power scaling: radius ∝ DBH^0.85
+  // More aggressive than sqrt (0.5) to make size differences pop at city scale
+  // Result: a 40" London planetree is ~7x larger than a 3" serviceberry
+  const getRadiusFromDiameter = (dbh: number): number => {
+    // Use median diameter for missing data
+    const effectiveDBH = dbh > 0 ? dbh : DEFAULT_DBH
+
+    // Clamp to reasonable range
+    const clampedDBH = Math.max(MIN_DBH, Math.min(MAX_DBH, effectiveDBH))
+
+    // Power scaling with exponent 0.85 - aggressive enough to see the difference
+    const normalized = Math.pow(clampedDBH / MIN_DBH, 0.85)
+    const maxNormalized = Math.pow(MAX_DBH / MIN_DBH, 0.85)
+
+    // Map to radius range
+    return MIN_RADIUS + (normalized / maxNormalized) * (MAX_RADIUS - MIN_RADIUS)
   }
 
   // Create the tree layer
@@ -153,8 +157,8 @@ export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
           return getTreeColor(timing, currentDOY, d.offset)
         },
         getRadius: (d) => getRadiusFromDiameter(d.diameter),
-        radiusMinPixels: 1,
-        radiusMaxPixels: 12,
+        radiusMinPixels: 1.5,
+        radiusMaxPixels: 30,
         updateTriggers: {
           getFillColor: [currentDOY],
         },
