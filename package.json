@@ -1,7 +1,7 @@
 {
   "name": "nyc-tree-map",
   "version": "1.0.0",
-  "description": "NYC Autumn Foliage Visualization - 680k trees changing color through fall",
+  "description": "NYC Autumn Foliage visualization of 652,168 living street trees changing color through a modeled fall",
   "type": "module",
   "homepage": "https://anshsancheti.github.io/nyc-tree-map",
   "scripts": {

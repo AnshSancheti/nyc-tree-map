@@ -72,7 +72,7 @@ function App() {
     return (
       <div className="loading">
         <div className="loading-spinner" />
-        <p>Loading 680,000 trees...</p>
+        <p>Loading 652,168 trees...</p>
       </div>
     )
   }

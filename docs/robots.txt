@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anshsancheti.github.io/nyc-tree-map/sitemap.xml

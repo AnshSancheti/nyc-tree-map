@@ -1,0 +1,25 @@
+# NYC Autumn Foliage
+
+> A WebGL time-lapse of 652,168 living New York City street trees changing color through a modeled autumn.
+
+Canonical URL: https://anshsancheti.github.io/nyc-tree-map/
+Creator: [Ansh Sancheti](https://anshsancheti.github.io/)
+Status: Public interactive data visualization
+
+## What it is
+
+NYC Autumn Foliage turns the 2015 New York City Street Tree Census into a citywide animation. The deployed dataset contains 652,168 living trees across 132 recorded species. Each tree is rendered as a small point at its census location.
+
+Color and timing vary by species, with a small deterministic-looking per-tree offset to avoid perfectly synchronized changes. The foliage schedule is a modeled interpretation based on typical New York fall patterns and species-level research defaults; it is not a live forecast or a reconstruction of observed conditions in a particular year.
+
+The visualization uses React, MapLibre, deck.gl, and WebGL to animate hundreds of thousands of points while allowing the viewer to pan, zoom, pause, change speed, and move through the seasonal timeline.
+
+## Data source
+
+- [2015 Street Tree Census, NYC Open Data](https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh)
+
+## Important links
+
+- [Open NYC Autumn Foliage](https://anshsancheti.github.io/nyc-tree-map/)
+- [View the source repository](https://github.com/AnshSancheti/nyc-tree-map)
+- [More work by Ansh Sancheti](https://anshsancheti.github.io/)
