@@ -15,15 +15,20 @@ interface UseAnimationReturn {
   reset: () => void
 }
 
+const DEFAULT_SPEED = 4
+
 export function useAnimation(): UseAnimationReturn {
   const { START_DOY, END_DOY, DEFAULT_DURATION } = ANIMATION_BOUNDS
 
   const [currentDOY, setCurrentDOY] = useState(START_DOY)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [speed, setSpeedState] = useState(4)
+  const [speed, setSpeedState] = useState(DEFAULT_SPEED)
 
   const animationRef = useRef<number | null>(null)
   const lastTimeRef = useRef<number>(0)
+  // The rAF loop reads speed from a ref so changing it mid-playback takes
+  // effect immediately instead of being captured by a stale closure.
+  const speedRef = useRef<number>(DEFAULT_SPEED)
 
   // Calculate how many DOY units to advance per millisecond
   // At speed=1, we want to cover (END_DOY - START_DOY) in DEFAULT_DURATION seconds
@@ -43,7 +48,7 @@ export function useAnimation(): UseAnimationReturn {
     lastTimeRef.current = timestamp
 
     setCurrentDOY(prev => {
-      const newDOY = prev + getDOYPerMs(speed) * deltaMs
+      const newDOY = prev + getDOYPerMs(speedRef.current) * deltaMs
       if (newDOY >= END_DOY) {
         // Loop back to start
         return START_DOY
@@ -52,7 +57,7 @@ export function useAnimation(): UseAnimationReturn {
     })
 
     animationRef.current = requestAnimationFrame(animate)
-  }, [speed, getDOYPerMs, END_DOY, START_DOY])
+  }, [getDOYPerMs, END_DOY, START_DOY])
 
   // Start animation
   const play = useCallback(() => {
@@ -83,6 +88,7 @@ export function useAnimation(): UseAnimationReturn {
 
   // Set playback speed
   const setSpeed = useCallback((newSpeed: number) => {
+    speedRef.current = newSpeed
     setSpeedState(newSpeed)
   }, [])
 
