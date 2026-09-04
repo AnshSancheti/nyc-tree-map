@@ -8,3 +8,4 @@ tmp/
 
 # Large raw data files
 public/data/*.csv
+*.tsbuildinfo
