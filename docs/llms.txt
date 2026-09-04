@@ -21,5 +21,5 @@ The visualization uses React, MapLibre, deck.gl, and WebGL to animate hundreds o
 ## Important links
 
 - [Open Endless Autumn](https://anshsancheti.github.io/endless-autumn/)
-- [View the source repository](https://github.com/AnshSancheti/nyc-tree-map)
+- [View the source repository](https://github.com/AnshSancheti/endless-autumn)
 - [More work by Ansh Sancheti](https://anshsancheti.github.io/)
