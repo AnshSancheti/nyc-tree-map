@@ -1,9 +1,9 @@
 {
-  "name": "nyc-tree-map",
+  "name": "endless-autumn",
   "version": "1.0.0",
-  "description": "NYC Autumn Foliage visualization of 652,168 living street trees changing color through a modeled fall",
+  "description": "digital senescence",
   "type": "module",
-  "homepage": "https://anshsancheti.github.io/nyc-tree-map",
+  "homepage": "https://anshsancheti.github.io/endless-autumn",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

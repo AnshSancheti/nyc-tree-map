@@ -1,4 +1,4 @@
-# NYC Autumn Foliage Visualization
+# Endless Autumn
 
 A time-lapse animation of New York City's 680,000 street trees changing color through fall, rendered as glowing pixels on a dark map.
 

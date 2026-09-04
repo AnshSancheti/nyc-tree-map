@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // GitHub Pages deploys to /<repo-name>/
-  base: process.env.NODE_ENV === 'production' ? '/nyc-tree-map/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/endless-autumn/' : '/',
   server: {
     port: 3000,
   },

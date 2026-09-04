@@ -1,14 +1,14 @@
-# NYC Autumn Foliage
+# Endless Autumn
 
-> A WebGL time-lapse of 652,168 living New York City street trees changing color through a modeled autumn.
+> digital senescence
 
-Canonical URL: https://anshsancheti.github.io/nyc-tree-map/
+Canonical URL: https://anshsancheti.github.io/endless-autumn/
 Creator: [Ansh Sancheti](https://anshsancheti.github.io/)
 Status: Public interactive data visualization
 
 ## What it is
 
-NYC Autumn Foliage turns the 2015 New York City Street Tree Census into a citywide animation. The deployed dataset contains 652,168 living trees across 132 recorded species. Each tree is rendered as a small point at its census location.
+Endless Autumn turns the 2015 New York City Street Tree Census into a citywide animation. The deployed dataset contains 652,168 living trees across 132 recorded species. Each tree is rendered as a small point at its census location.
 
 Color and timing vary by species, with a small deterministic-looking per-tree offset to avoid perfectly synchronized changes. The foliage schedule is a modeled interpretation based on typical New York fall patterns and species-level research defaults; it is not a live forecast or a reconstruction of observed conditions in a particular year.
 
@@ -20,6 +20,6 @@ The visualization uses React, MapLibre, deck.gl, and WebGL to animate hundreds o
 
 ## Important links
 
-- [Open NYC Autumn Foliage](https://anshsancheti.github.io/nyc-tree-map/)
+- [Open Endless Autumn](https://anshsancheti.github.io/endless-autumn/)
 - [View the source repository](https://github.com/AnshSancheti/nyc-tree-map)
 - [More work by Ansh Sancheti](https://anshsancheti.github.io/)
