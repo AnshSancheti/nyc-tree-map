@@ -1,10 +1,8 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
-import { ANIMATION_BOUNDS } from '../utils/phenology'
+import { useEffect, useRef, useState } from 'react'
+import { clock } from '../animation/clock'
+import type { ClockSnapshot } from '../animation/AnimationClock'
 
-interface UseAnimationReturn {
-  currentDOY: number
-  isPlaying: boolean
-  speed: number
+interface UseAnimationReturn extends ClockSnapshot {
   startDOY: number
   endDOY: number
   play: () => void
@@ -15,114 +13,43 @@ interface UseAnimationReturn {
   reset: () => void
 }
 
-const DEFAULT_SPEED = 4
+/** How often the React-rendered controls follow the clock while playing. */
+const CONTROLS_UPDATE_MS = 100
 
+/**
+ * React view of the animation clock. The clock itself runs outside React and
+ * drives the map directly; this hook only feeds the controls, throttled so the
+ * date label and slider do not re-render every animation frame.
+ */
 export function useAnimation(): UseAnimationReturn {
-  const { START_DOY, END_DOY, DEFAULT_DURATION } = ANIMATION_BOUNDS
+  const [snapshot, setSnapshot] = useState<ClockSnapshot>(() => clock.getSnapshot())
+  const lastRenderRef = useRef(0)
+  const lastSnapshotRef = useRef(snapshot)
 
-  const [currentDOY, setCurrentDOY] = useState(START_DOY)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [speed, setSpeedState] = useState(DEFAULT_SPEED)
-
-  const animationRef = useRef<number | null>(null)
-  const lastTimeRef = useRef<number>(0)
-  // The rAF loop reads speed from a ref so changing it mid-playback takes
-  // effect immediately instead of being captured by a stale closure.
-  const speedRef = useRef<number>(DEFAULT_SPEED)
-
-  // Calculate how many DOY units to advance per millisecond
-  // At speed=1, we want to cover (END_DOY - START_DOY) in DEFAULT_DURATION seconds
-  const getDOYPerMs = useCallback((currentSpeed: number) => {
-    const totalDays = END_DOY - START_DOY
-    const durationMs = DEFAULT_DURATION * 1000
-    return (totalDays / durationMs) * currentSpeed
-  }, [END_DOY, START_DOY, DEFAULT_DURATION])
-
-  // Animation loop
-  const animate = useCallback((timestamp: number) => {
-    if (!lastTimeRef.current) {
-      lastTimeRef.current = timestamp
-    }
-
-    const deltaMs = timestamp - lastTimeRef.current
-    lastTimeRef.current = timestamp
-
-    setCurrentDOY(prev => {
-      const newDOY = prev + getDOYPerMs(speedRef.current) * deltaMs
-      if (newDOY >= END_DOY) {
-        // Loop back to start
-        return START_DOY
-      }
-      return newDOY
-    })
-
-    animationRef.current = requestAnimationFrame(animate)
-  }, [getDOYPerMs, END_DOY, START_DOY])
-
-  // Start animation
-  const play = useCallback(() => {
-    if (isPlaying) return
-
-    setIsPlaying(true)
-    lastTimeRef.current = 0
-    animationRef.current = requestAnimationFrame(animate)
-  }, [isPlaying, animate])
-
-  // Stop animation
-  const pause = useCallback(() => {
-    setIsPlaying(false)
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current)
-      animationRef.current = null
-    }
-  }, [])
-
-  // Toggle play/pause
-  const toggle = useCallback(() => {
-    if (isPlaying) {
-      pause()
-    } else {
-      play()
-    }
-  }, [isPlaying, play, pause])
-
-  // Set playback speed
-  const setSpeed = useCallback((newSpeed: number) => {
-    speedRef.current = newSpeed
-    setSpeedState(newSpeed)
-  }, [])
-
-  // Seek to specific DOY
-  const seekTo = useCallback((doy: number) => {
-    setCurrentDOY(Math.max(START_DOY, Math.min(END_DOY, doy)))
-  }, [START_DOY, END_DOY])
-
-  // Reset to start
-  const reset = useCallback(() => {
-    pause()
-    setCurrentDOY(START_DOY)
-  }, [pause, START_DOY])
-
-  // Cleanup on unmount
   useEffect(() => {
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
+    return clock.subscribe((next) => {
+      const prev = lastSnapshotRef.current
+      const now = performance.now()
+      const stateChanged = next.isPlaying !== prev.isPlaying || next.speed !== prev.speed
+      const due = now - lastRenderRef.current >= CONTROLS_UPDATE_MS
+      const wrapped = next.currentDOY < prev.currentDOY
+      if (stateChanged || due || wrapped || !next.isPlaying) {
+        lastRenderRef.current = now
+        lastSnapshotRef.current = next
+        setSnapshot(next)
       }
-    }
+    })
   }, [])
 
   return {
-    currentDOY,
-    isPlaying,
-    speed,
-    startDOY: START_DOY,
-    endDOY: END_DOY,
-    play,
-    pause,
-    toggle,
-    setSpeed,
-    seekTo,
-    reset,
+    ...snapshot,
+    startDOY: clock.startDOY,
+    endDOY: clock.endDOY,
+    play: () => clock.play(),
+    pause: () => clock.pause(),
+    toggle: () => clock.toggle(),
+    setSpeed: (speed: number) => clock.setSpeed(speed),
+    seekTo: (doy: number) => clock.seek(doy),
+    reset: () => clock.reset(),
   }
 }

@@ -109,8 +109,10 @@ export function getDefaultTimingForSpecies(species: string): typeof DEFAULT_TIMI
 // Animation timing constants
 export const ANIMATION_BOUNDS = {
   START_DOY: 255,  // ~Sept 12 (before earliest color change)
-  END_DOY: 330,    // ~Nov 26 (after latest leaf drop)
+  END_DOY: 330,    // ~Nov 26 (loop end; a few late oaks and planetrees are still fading)
 
-  // Duration in seconds at 1x speed
-  DEFAULT_DURATION: 45,
+  // Wall-clock seconds for one full loop at the "1x" playback speed.
+  // (Historically this was 45s at an internal speed of 1, with the UI's "1x"
+  // mapped to internal speed 4; the two are now the same number.)
+  SECONDS_PER_LOOP_AT_1X: 11.25,
 }

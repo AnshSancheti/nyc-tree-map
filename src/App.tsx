@@ -1,14 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Map from './components/Map'
 import Controls from './components/Controls'
 import { useAnimation } from './hooks/useAnimation'
-import type { TreeData, PhenologyData } from './data/types'
+import { clock } from './animation/clock'
+import { loadTreeDataset, buildRenderAttributes } from './data/loadTrees'
+import type { TreeDataset, RenderAttributes } from './data/loadTrees'
+import type { PhenologyData } from './data/types'
+
+interface LoadedData {
+  dataset: TreeDataset
+  attributes: RenderAttributes
+}
+
+const PROGRESS_UPDATE_MS = 100
 
 function App() {
-  const [treeData, setTreeData] = useState<TreeData | null>(null)
-  const [phenologyData, setPhenologyData] = useState<PhenologyData | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loaded, setLoaded] = useState<LoadedData | null>(null)
+  const [progress, setProgress] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const lastProgressRef = useRef(0)
 
   const {
     currentDOY,
@@ -19,40 +29,49 @@ function App() {
     setSpeed,
     seekTo,
     startDOY,
-    endDOY
+    endDOY,
   } = useAnimation()
 
   useEffect(() => {
+    let cancelled = false
+
     async function loadData() {
       try {
-        setLoading(true)
-
-        // Load tree data (use BASE_URL for GitHub Pages compatibility)
+        // Use BASE_URL for GitHub Pages compatibility
         const baseUrl = import.meta.env.BASE_URL
-        const treesResponse = await fetch(`${baseUrl}data/trees.json`)
-        if (!treesResponse.ok) throw new Error('Failed to load tree data')
-        const trees = await treesResponse.json()
 
-        // Load phenology data
-        const phenologyResponse = await fetch(`${baseUrl}data/phenology.json`)
-        if (!phenologyResponse.ok) throw new Error('Failed to load phenology data')
-        const phenology = await phenologyResponse.json()
+        const phenologyPromise = fetch(`${baseUrl}data/phenology.json`).then((r) => {
+          if (!r.ok) throw new Error('Failed to load phenology data')
+          return r.json() as Promise<PhenologyData>
+        })
 
-        setTreeData(trees)
-        setPhenologyData(phenology)
+        const dataset = await loadTreeDataset(baseUrl, (loadedBytes, totalBytes) => {
+          const now = performance.now()
+          if (now - lastProgressRef.current < PROGRESS_UPDATE_MS) return
+          lastProgressRef.current = now
+          setProgress(totalBytes ? loadedBytes / totalBytes : null)
+        })
+        const phenology = await phenologyPromise
+        if (cancelled) return
+
+        const attributes = buildRenderAttributes(dataset, phenology)
+        setLoaded({ dataset, attributes })
         setError(null)
 
         // Autoplay animation after data loads
-        setTimeout(() => play(), 100)
+        setTimeout(() => {
+          if (!cancelled) clock.play()
+        }, 100)
       } catch (err) {
         console.error('Error loading data:', err)
-        setError(err instanceof Error ? err.message : 'Failed to load data')
-      } finally {
-        setLoading(false)
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load data')
       }
     }
 
     loadData()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   if (error) {
@@ -68,22 +87,22 @@ function App() {
     )
   }
 
-  if (loading || !treeData || !phenologyData) {
+  if (!loaded) {
+    const percent = progress === null ? null : Math.round(progress * 100)
     return (
       <div className="loading">
         <div className="loading-spinner" />
-        <p>Loading 652,168 trees...</p>
+        <p>
+          Loading 652,168 trees...
+          {percent !== null && <span className="loading-percent"> {percent}%</span>}
+        </p>
       </div>
     )
   }
 
   return (
     <>
-      <Map
-        treeData={treeData}
-        phenologyData={phenologyData}
-        currentDOY={currentDOY}
-      />
+      <Map dataset={loaded.dataset} attributes={loaded.attributes} />
       <Controls
         currentDOY={currentDOY}
         isPlaying={isPlaying}
