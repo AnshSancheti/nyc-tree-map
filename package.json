@@ -8,6 +8,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.scripts.json",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d docs",
     "fetch-trees": "tsx scripts/fetch-tree-data.ts",

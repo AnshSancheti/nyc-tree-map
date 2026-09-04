@@ -1,200 +1,168 @@
-import { useMemo } from 'react'
-import { Map as MapLibre } from 'react-map-gl/maplibre'
-import DeckGL from '@deck.gl/react'
-import { ScatterplotLayer } from '@deck.gl/layers'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { Map as MapLibre, useControl } from 'react-map-gl/maplibre'
+import type { ViewStateChangeEvent } from 'react-map-gl/maplibre'
+import { MapboxOverlay } from '@deck.gl/mapbox'
 import type { PickingInfo } from '@deck.gl/core'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-import { SquareLayer } from './DiamondLayer'
+import { TreeLayer } from './TreeLayer'
+import { clock } from '../animation/clock'
+import type { TreeDataset, RenderAttributes } from '../data/loadTrees'
 
 // Detect actual mobile devices (not just emulation)
-// Mobile shader compilers are stricter, so we fall back to circles
 const isMobileDevice = (): boolean => {
   if (typeof window === 'undefined') return false
   const ua = navigator.userAgent.toLowerCase()
   const isMobileUA = /iphone|ipad|ipod|android|webos|blackberry|windows phone/i.test(ua)
   const isSmallScreen = window.innerWidth <= 768
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-  // Only consider it mobile if it has a mobile user agent AND small screen
-  // This helps distinguish actual mobile from desktop emulation
   return isMobileUA && isSmallScreen && hasTouch
 }
 
 const IS_MOBILE = isMobileDevice()
-import type { TreeData, PhenologyData } from '../data/types'
-import { getTreeColor } from '../utils/colors'
-import { getSpeciesPeakColor } from '../data/speciesColors'
-import { getDefaultTimingForSpecies } from '../utils/phenology'
 
-// Diameter scaling constants
-// NYC street trees range from 3" (serviceberry) to 40"+ (mature London planetree)
-// Using aggressive scaling so size differences are visible at city scale
-const MIN_DBH = 3       // smallest trees (serviceberry, young plantings)
-const MAX_DBH = 45      // largest trees (mature London planetrees, oaks)
-const DEFAULT_DBH = 10  // median diameter for trees with missing data
-const MIN_RADIUS = 1.5  // tiny ornamentals - barely visible specks
-const MAX_RADIUS = 22   // massive canopy trees - dominate the view
+// Hover picking is desktop-only and pointless when a tree is a 1.5px speck.
+const PICKING_MIN_ZOOM = 12
+
+// Note on level of detail: the dataset is stored in a seeded random order, so
+// if a device ever needs thinning when zoomed out, passing
+// `numInstances: Math.min(count, budget)` to the layer draws a uniform sample
+// of the city with no re-upload. Emulated mobile surfaces hold 60 fps with the
+// full set, so nothing is thinned today.
 
 interface MapProps {
-  treeData: TreeData
-  phenologyData: PhenologyData
-  currentDOY: number
+  dataset: TreeDataset
+  attributes: RenderAttributes
 }
 
 // NYC initial view - zoomed out to see all boroughs
-const NYC_BOUNDS = {
+const NYC_VIEW = {
   longitude: -73.98,
   latitude: 40.70,
   zoom: 9.9,
   pitch: 0,
   bearing: 0,
 }
+const MIN_ZOOM = 9.8
 
 // Dark basemap style - using Carto Dark Matter (no labels)
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json'
 
-export default function Map({ treeData, phenologyData, currentDOY }: MapProps) {
-  // Build phenology lookup with peak colors
-  const phenologyLookup = useMemo(() => {
-    const lookup: Record<number, {
-      onset: number
-      peak: number
-      drop: number
-      peakColor: [number, number, number]
-    } | null> = {}
+const TOOLTIP_STYLE = {
+  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  color: '#fff',
+  fontSize: '12px',
+  padding: '4px 8px',
+  borderRadius: '4px',
+}
 
-    treeData.species.forEach((speciesName, index) => {
-      const phenology = phenologyData[speciesName] || phenologyData[speciesName.toLowerCase()]
+interface OverlayHandle {
+  overlay: MapboxOverlay | null
+  attached: boolean
+}
 
-      if (phenology) {
-        lookup[index] = {
-          onset: phenology.onset,
-          peak: phenology.peak,
-          drop: phenology.drop,
-          peakColor: phenology.peakColor || getSpeciesPeakColor(speciesName),
-        }
-      } else {
-        // Use default timing based on species type
-        const defaultTiming = getDefaultTimingForSpecies(speciesName)
-        lookup[index] = {
-          onset: defaultTiming.onset,
-          peak: defaultTiming.peak,
-          drop: defaultTiming.drop,
-          peakColor: getSpeciesPeakColor(speciesName),
-        }
-      }
-    })
+/**
+ * Mounts deck.gl as a MapLibre control in interleaved mode: one canvas, deck
+ * draws inside MapLibre's own render pass. The overlay instance is handed back
+ * through a ref so the animation clock can update it without React.
+ */
+function DeckOverlay({ handle, onAttached }: { handle: React.MutableRefObject<OverlayHandle>; onAttached: () => void }) {
+  useControl<MapboxOverlay>(
+    () => {
+      const overlay = new MapboxOverlay({ interleaved: true, layers: [] })
+      handle.current.overlay = overlay
+      return overlay
+    },
+    () => {
+      handle.current.attached = true
+      onAttached()
+    },
+    () => {
+      handle.current.attached = false
+      handle.current.overlay = null
+    },
+  )
+  return null
+}
 
-    return lookup
-  }, [treeData.species, phenologyData])
+export default function Map({ dataset, attributes }: MapProps) {
+  const handleRef = useRef<OverlayHandle>({ overlay: null, attached: false })
+  const zoomRef = useRef(NYC_VIEW.zoom)
+  const doyRef = useRef(clock.getSnapshot().currentDOY)
 
-  // Convert positions to array format for deck.gl
-  const data = useMemo(() => {
-    const positions = treeData.positions
-    const result: Array<{
-      position: [number, number]
-      speciesIndex: number
-      offset: number
-      diameter: number
-    }> = []
-
-    // Handle both typed array and regular array
-    if (positions instanceof Float32Array) {
-      // Format: [lng, lat, speciesIndex, offset, diameter, lng, lat, ...]
-      for (let i = 0; i < positions.length; i += 5) {
-        result.push({
-          position: [positions[i], positions[i + 1]],
-          speciesIndex: positions[i + 2],
-          offset: positions[i + 3],
-          diameter: positions[i + 4] || 0,
-        })
-      }
-    } else {
-      // Format: [[lng, lat, speciesIndex, offset, diameter], ...]
-      for (const item of positions) {
-        result.push({
-          position: [item[0], item[1]],
-          speciesIndex: item[2],
-          offset: item[3] || 0,
-          diameter: item[4] || 0,
-        })
-      }
-    }
-
-    return result
-  }, [treeData.positions])
-
-  // Calculate radius from DBH (diameter at breast height)
-  // Uses power scaling: radius ∝ DBH^0.85
-  // More aggressive than sqrt (0.5) to make size differences pop at city scale
-  // Result: a 40" London planetree is ~7x larger than a 3" serviceberry
-  const getRadiusFromDiameter = (dbh: number): number => {
-    // Use median diameter for missing data
-    const effectiveDBH = dbh > 0 ? dbh : DEFAULT_DBH
-
-    // Clamp to reasonable range
-    const clampedDBH = Math.max(MIN_DBH, Math.min(MAX_DBH, effectiveDBH))
-
-    // Power scaling with exponent 0.85 - aggressive enough to see the difference
-    const normalized = Math.pow(clampedDBH / MIN_DBH, 0.85)
-    const maxNormalized = Math.pow(MAX_DBH / MIN_DBH, 0.85)
-
-    // Map to radius range
-    return MIN_RADIUS + (normalized / maxNormalized) * (MAX_RADIUS - MIN_RADIUS)
-  }
-
-  // Create the tree layer
-  // Use squares on desktop, circles on mobile (mobile shader compilers don't support our custom shader)
-  const layers = useMemo(() => {
-    const LayerClass = IS_MOBILE ? ScatterplotLayer : SquareLayer
-    return [
-      new LayerClass({
-        id: 'trees',
-        data,
-        getPosition: (d) => d.position,
-        getFillColor: (d) => {
-          const timing = phenologyLookup[d.speciesIndex]
-          return getTreeColor(timing, currentDOY, d.offset)
-        },
-        getRadius: (d) => getRadiusFromDiameter(d.diameter),
-        radiusMinPixels: 1.5,
-        radiusMaxPixels: 30,
-        updateTriggers: {
-          getFillColor: [currentDOY],
-        },
-        pickable: true,
-      }),
-    ]
-  }, [data, phenologyLookup, currentDOY])
-
-  // Tooltip on hover
-  const getTooltip = ({ object }: PickingInfo) => {
-    if (!object) return null
-    const species = treeData.species[object.speciesIndex] || 'Unknown'
-    return {
-      text: species,
-      style: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        color: '#fff',
-        fontSize: '12px',
-        padding: '4px 8px',
-        borderRadius: '4px',
+  // Binary structure-of-arrays input: deck.gl uploads these typed arrays as-is.
+  const data = useMemo(
+    () => ({
+      length: dataset.count,
+      attributes: {
+        getPosition: { value: dataset.positions, size: 2 },
+        getRadius: { value: attributes.radius, size: 1 },
+        getTiming: { value: attributes.timing, size: 3 },
+        getPeakColor: { value: attributes.peakColor, size: 3, normalized: true },
       },
-    }
-  }
+    }),
+    [dataset, attributes],
+  )
+
+  const getTooltip = useCallback(
+    ({ index }: PickingInfo) => {
+      if (index < 0 || index >= dataset.count) return null
+      const species = dataset.speciesNames[dataset.species[index]] || 'Unknown'
+      return { text: species, style: TOOLTIP_STYLE }
+    },
+    [dataset],
+  )
+
+  const render = useCallback(() => {
+    const { overlay, attached } = handleRef.current
+    if (!overlay || !attached) return
+    const zoom = zoomRef.current
+    overlay.setProps({
+      layers: [
+        new TreeLayer({
+          id: 'trees',
+          data,
+          currentDOY: doyRef.current,
+          square: !IS_MOBILE,
+          pickable: !IS_MOBILE && zoom >= PICKING_MIN_ZOOM,
+          radiusMinPixels: 1.5,
+          radiusMaxPixels: 30,
+        }),
+      ],
+      getTooltip,
+    })
+  }, [data, dataset.count, getTooltip])
+
+  // Animation frames go straight from the clock to deck.gl; React is not involved.
+  useEffect(() => {
+    return clock.subscribe((snapshot) => {
+      doyRef.current = snapshot.currentDOY
+      render()
+    })
+  }, [render])
+
+  const handleMove = useCallback(
+    (e: ViewStateChangeEvent) => {
+      const prev = zoomRef.current
+      const next = e.viewState.zoom
+      zoomRef.current = next
+      // Only a zoom crossing changes layer props; a pan needs nothing from us.
+      const crossedPicking = (prev >= PICKING_MIN_ZOOM) !== (next >= PICKING_MIN_ZOOM)
+      if (crossedPicking) render()
+    },
+    [render],
+  )
 
   return (
-    <DeckGL
-      initialViewState={NYC_BOUNDS}
-      // @ts-expect-error minZoom works at runtime but isn't in types
-      controller={{ minZoom: 9.8 }}
-      layers={layers}
-      getTooltip={getTooltip}
+    <MapLibre
+      initialViewState={NYC_VIEW}
+      minZoom={MIN_ZOOM}
+      mapStyle={MAP_STYLE}
+      attributionControl={false}
+      onMove={handleMove}
+      style={{ width: '100%', height: '100%' }}
     >
-      <MapLibre
-        mapStyle={MAP_STYLE}
-        attributionControl={false}
-      />
-    </DeckGL>
+      <DeckOverlay handle={handleRef} onAttached={render} />
+    </MapLibre>
   )
 }

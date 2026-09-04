@@ -1,13 +1,16 @@
 /**
  * Fetch and process NYC Street Tree Census data
  *
- * Downloads ~680k tree records from NYC Open Data API
- * Outputs optimized JSON for the visualization
+ * Downloads ~680k tree records from NYC Open Data API and writes the binary
+ * structure-of-arrays dataset the visualization loads:
+ *   public/data/trees.bin        11 bytes per tree, see src/data/treeEncoding.ts
+ *   public/data/trees.meta.json  count, species names, bounds
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { encodeTrees, type TreeRecord } from '../src/data/treeEncoding'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -27,14 +30,6 @@ interface RawTreeRecord {
   tree_dbh?: string  // Diameter at breast height in inches
 }
 
-interface ProcessedTree {
-  lng: number
-  lat: number
-  speciesIndex: number
-  offset: number
-  diameter: number  // DBH in inches (0 if unknown)
-}
-
 async function fetchPage(offset: number): Promise<RawTreeRecord[]> {
   const params = new URLSearchParams({
     $limit: PAGE_SIZE.toString(),
@@ -51,7 +46,7 @@ async function fetchPage(offset: number): Promise<RawTreeRecord[]> {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`)
   }
 
-  return response.json()
+  return (await response.json()) as RawTreeRecord[]
 }
 
 async function fetchAllTrees(): Promise<RawTreeRecord[]> {
@@ -81,64 +76,41 @@ async function fetchAllTrees(): Promise<RawTreeRecord[]> {
   return allTrees
 }
 
-function processTreeData(rawTrees: RawTreeRecord[]) {
-  // Build species lookup
+function isInNYC(lat: number, lng: number): boolean {
+  return !isNaN(lat) && !isNaN(lng) && lat >= 40.4 && lat <= 41.0 && lng >= -74.3 && lng <= -73.6
+}
+
+function processTreeData(rawTrees: RawTreeRecord[]): { records: TreeRecord[]; species: string[] } {
   const speciesSet = new Set<string>()
-  const validTrees: ProcessedTree[] = []
+  const kept: Array<{ lng: number; lat: number; species: string; diameter: number }> = []
 
   for (const tree of rawTrees) {
     // Skip trees without coordinates or species
-    if (!tree.latitude || !tree.longitude || !tree.spc_common) {
-      continue
-    }
-
-    const lat = parseFloat(tree.latitude)
-    const lng = parseFloat(tree.longitude)
-
-    // Validate coordinates are in NYC area
-    if (isNaN(lat) || isNaN(lng) || lat < 40.4 || lat > 41.0 || lng < -74.3 || lng > -73.6) {
-      continue
-    }
-
-    speciesSet.add(tree.spc_common)
-
-    // Parse diameter (DBH in inches), default to 0 if missing
-    const diameter = tree.tree_dbh ? parseInt(tree.tree_dbh, 10) : 0
-
-    validTrees.push({
-      lng,
-      lat,
-      speciesIndex: -1, // Will be set after we build the species array
-      offset: Math.round((Math.random() * 10 - 5)), // Random offset -5 to +5 days
-      diameter: isNaN(diameter) ? 0 : diameter,
-    })
-  }
-
-  // Build species array and update indices
-  const speciesArray = Array.from(speciesSet).sort()
-  const speciesIndexMap = new Map(speciesArray.map((s, i) => [s, i]))
-
-  // Re-process to assign correct species indices
-  let i = 0
-  for (const tree of rawTrees) {
     if (!tree.latitude || !tree.longitude || !tree.spc_common) continue
 
     const lat = parseFloat(tree.latitude)
     const lng = parseFloat(tree.longitude)
-    if (isNaN(lat) || isNaN(lng) || lat < 40.4 || lat > 41.0 || lng < -74.3 || lng > -73.6) continue
+    if (!isInNYC(lat, lng)) continue
 
-    validTrees[i].speciesIndex = speciesIndexMap.get(tree.spc_common)!
-    i++
+    speciesSet.add(tree.spc_common)
+
+    // Parse diameter (DBH in inches), default to 0 if missing
+    const parsed = tree.tree_dbh ? parseInt(tree.tree_dbh, 10) : 0
+    kept.push({ lng, lat, species: tree.spc_common, diameter: isNaN(parsed) ? 0 : parsed })
   }
 
-  // Convert to flat array format: [lng, lat, speciesIndex, offset, diameter]
-  const positions: number[][] = validTrees.map(t => [t.lng, t.lat, t.speciesIndex, t.offset, t.diameter])
+  const species = Array.from(speciesSet).sort()
+  const speciesIndex = new Map(species.map((s, i) => [s, i]))
 
-  return {
-    positions,
-    species: speciesArray,
-    count: validTrees.length,
-  }
+  const records: TreeRecord[] = kept.map(t => ({
+    lng: t.lng,
+    lat: t.lat,
+    speciesIndex: speciesIndex.get(t.species)!,
+    offset: Math.round(Math.random() * 10 - 5), // Random offset -5 to +5 days
+    diameter: t.diameter,
+  }))
+
+  return { records, species }
 }
 
 async function main() {
@@ -149,9 +121,11 @@ async function main() {
   console.log(`\nFetched ${rawTrees.length} raw records`)
 
   console.log('\nProcessing tree data...')
-  const processedData = processTreeData(rawTrees)
-  console.log(`Processed ${processedData.count} valid trees`)
-  console.log(`Found ${processedData.species.length} unique species`)
+  const { records, species } = processTreeData(rawTrees)
+  console.log(`Processed ${records.length} valid trees`)
+  console.log(`Found ${species.length} unique species`)
+
+  const { buffer, meta } = encodeTrees(records, species)
 
   // Ensure output directory exists
   const outputDir = join(__dirname, '..', 'public', 'data')
@@ -159,13 +133,14 @@ async function main() {
     mkdirSync(outputDir, { recursive: true })
   }
 
-  // Write output
-  const outputPath = join(outputDir, 'trees.json')
-  writeFileSync(outputPath, JSON.stringify(processedData))
+  const binPath = join(outputDir, 'trees.bin')
+  const metaPath = join(outputDir, 'trees.meta.json')
+  writeFileSync(binPath, Buffer.from(buffer))
+  writeFileSync(metaPath, JSON.stringify(meta))
 
-  const fileSizeMB = (Buffer.byteLength(JSON.stringify(processedData)) / 1024 / 1024).toFixed(2)
-  console.log(`\nOutput written to: ${outputPath}`)
-  console.log(`File size: ${fileSizeMB} MB`)
+  console.log(`\nOutput written to: ${binPath}`)
+  console.log(`File size: ${(buffer.byteLength / 1024 / 1024).toFixed(2)} MB`)
+  console.log(`Metadata written to: ${metaPath}`)
 
   // Print top 10 species
   console.log('\nTop species in dataset:')
@@ -179,8 +154,8 @@ async function main() {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
 
-  for (const [species, count] of topSpecies) {
-    console.log(`  ${species}: ${count.toLocaleString()}`)
+  for (const [name, count] of topSpecies) {
+    console.log(`  ${name}: ${count.toLocaleString()}`)
   }
 }
 
